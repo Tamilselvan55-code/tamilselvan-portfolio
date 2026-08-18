@@ -1,0 +1,53 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet" />
+    <title>tamilselvan - portfolio</title>
+    <meta name="description" content="Tamilselvan is a passionate Full Stack Developer and B.Tech Information Technology student specializing in React, Node.js, and AI-assisted workflows." />
+    
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content="Tamilselvan — Full Stack Developer" />
+    <meta property="og:description" content="Tamilselvan is a passionate Full Stack Developer and B.Tech Information Technology student specializing in React, Node.js, and AI-assisted workflows." />
+    
+    <!-- Twitter -->
+    <meta property="twitter:card" content="summary_large_image" />
+    <meta property="twitter:title" content="Tamilselvan — Full Stack Developer" />
+    <meta property="twitter:description" content="Tamilselvan is a passionate Full Stack Developer and B.Tech Information Technology student specializing in React, Node.js, and AI-assisted workflows." />
+    <!-- Initial Loader to prevent React mounting flash -->
+    <style>
+      body, html {
+        margin: 0;
+        padding: 0;
+        background-color: #F7F5F1; /* Ivory background */
+      }
+      #initial-loader {
+        position: fixed;
+        inset: 0;
+        z-index: 99999;
+        background-color: #F7F5F1;
+        pointer-events: none;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="initial-loader"></div>
+    <div id="root"></div>
+    <script type="module">
+      // Remove initial loader as soon as React starts mounting
+      const observer = new MutationObserver((mutations, obs) => {
+        const loader = document.getElementById('initial-loader');
+        if (document.getElementById('root').hasChildNodes() && loader) {
+          loader.remove();
+          obs.disconnect();
+        }
+      });
+      observer.observe(document.getElementById('root'), { childList: true });
+    </script>
+    <script type="module" src="/src/main.jsx"></script>
+  </body>
+</html>
