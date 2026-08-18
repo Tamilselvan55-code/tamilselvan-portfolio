@@ -9,9 +9,21 @@ const app = express();
 const PORT = process.env.PORT || 3001;
 
 // Middleware
+const allowedOrigins = [
+  'http://localhost:5180',
+  'https://tamilselvan-portfolio-06.web.app',
+  'https://tamilselvan-portfolio-06.firebaseapp.com'
+];
+
 app.use(cors({
-  origin: 'http://localhost:5180'
-})); // Allow Vite frontend during development
+  origin: function (origin, callback) {
+    if (!origin || allowedOrigins.includes(origin)) {
+      callback(null, true);
+    } else {
+      callback(new Error('Not allowed by CORS'));
+    }
+  }
+})); // Allow Vite frontend during development and Firebase production
 app.use(express.json()); // Parse JSON bodies
 
 // Health check endpoint
@@ -109,6 +121,6 @@ transporter.verify((error, success) => {
   }
 });
 
-app.listen(PORT, () => {
+app.listen(PORT, '0.0.0.0', () => {
   console.log(`Portfolio backend running on port ${PORT}`);
 });

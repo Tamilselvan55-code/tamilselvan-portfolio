@@ -120,7 +120,7 @@ export function ContactSection() {
     setFormStatus('submitting');
     
     // Real backend submission
-    fetch('http://localhost:3001/api/contact', {
+    fetch(`${import.meta.env.VITE_API_URL}/api/contact`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
