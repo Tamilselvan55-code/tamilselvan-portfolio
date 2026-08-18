@@ -176,7 +176,7 @@ export function ContactSection() {
           </span>
         </div>
 
-        <div className={`grid grid-cols-1 ${SHOW_CONTACT_FORM ? 'lg:grid-cols-2' : 'max-w-4xl'} gap-20 lg:gap-20`}>
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-20 lg:gap-20">
 
           {/* Left */}
           <div>
