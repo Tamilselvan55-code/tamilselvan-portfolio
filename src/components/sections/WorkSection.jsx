@@ -387,12 +387,12 @@ function ProjectCard({ project, index }) {
           )}
 
           <div className="flex items-center justify-between mt-auto relative">
-            <div ref={ctaRef} className="flex flex-wrap items-center gap-4 relative z-30 pointer-events-auto" style={{ opacity: 0 }}>
+            <div ref={ctaRef} className="flex flex-wrap items-center gap-4 md:gap-6 relative z-30 pointer-events-auto" style={{ opacity: 0 }}>
               <Link
                 to={project.status === 'In Progress' ? `/coming-soon/${project.id}` : `/project/${project.id}`}
                 state={{ fromPortfolio: true }}
                 onClick={(e) => e.stopPropagation()}
-                className="group/link relative inline-flex items-center gap-2 text-[0.8125rem] font-sans font-medium tracking-[0.08em] uppercase text-ink-primary hover:text-accent transition-all duration-300 active:translate-y-[1px] active:opacity-80 p-3 -ml-3 -mr-1 -my-3 outline-none focus-visible:ring-2 focus-visible:ring-accent rounded-sm"
+                className="group/link relative inline-flex items-center gap-2 text-[0.8125rem] font-sans font-medium tracking-[0.08em] uppercase text-ink-primary hover:text-accent transition-all duration-300 active:translate-y-[1px] active:opacity-80 py-2 px-1 outline-none focus-visible:ring-2 focus-visible:ring-accent rounded-sm"
               >
                 Case Study
                 <ArrowUpRight size={14} className="transition-transform duration-300 ease-out group-hover/link:translate-x-[3px] group-hover/link:-translate-y-[3px]" />
@@ -401,22 +401,19 @@ function ProjectCard({ project, index }) {
               
               {project.isLive ? (
                 <a href={project.liveUrl} target="_blank" rel="noopener noreferrer"
-                  onClick={(e) => e.stopPropagation()}
-                  className="group/btn relative inline-flex items-center gap-1.5 text-[0.8125rem] font-sans text-ink-muted hover:text-accent transition-all duration-300 active:translate-y-[1px] active:opacity-80 p-3 -m-3 outline-none focus-visible:ring-2 focus-visible:ring-accent rounded-sm">
+                  className="group/btn relative inline-flex items-center gap-1.5 text-[0.8125rem] font-sans text-ink-muted hover:text-accent transition-all duration-300 active:translate-y-[1px] active:opacity-80 py-2 px-1 outline-none focus-visible:ring-2 focus-visible:ring-accent rounded-sm">
                   Live <ArrowUpRight size={12} className="transition-transform duration-300 ease-out group-hover/btn:translate-x-[3px] group-hover/btn:-translate-y-[3px]" />
                 </a>
               ) : (
                 <Link to={`/coming-soon/${project.id}`}
                   state={{ fromPortfolio: true }}
-                  onClick={(e) => e.stopPropagation()}
-                  className="group/btn relative inline-flex items-center gap-1.5 text-[0.8125rem] font-sans text-ink-muted hover:text-accent transition-all duration-300 active:translate-y-[1px] active:opacity-80 p-3 -m-3 outline-none focus-visible:ring-2 focus-visible:ring-accent rounded-sm">
+                  className="group/btn relative inline-flex items-center gap-1.5 text-[0.8125rem] font-sans text-ink-muted hover:text-accent transition-all duration-300 active:translate-y-[1px] active:opacity-80 py-2 px-1 outline-none focus-visible:ring-2 focus-visible:ring-accent rounded-sm">
                   Live <ArrowUpRight size={12} className="transition-transform duration-300 ease-out group-hover/btn:translate-x-[3px] group-hover/btn:-translate-y-[3px]" />
                 </Link>
               )}
 
               <a href={project.githubUrl} target="_blank" rel="noopener noreferrer"
-                onClick={(e) => e.stopPropagation()}
-                className="group/btn relative inline-flex items-center gap-1.5 text-[0.8125rem] font-sans text-ink-muted hover:text-accent transition-all duration-300 active:translate-y-[1px] active:opacity-80 p-3 -m-3 outline-none focus-visible:ring-2 focus-visible:ring-accent rounded-sm">
+                className="group/btn relative inline-flex items-center gap-1.5 text-[0.8125rem] font-sans text-ink-muted hover:text-accent transition-all duration-300 active:translate-y-[1px] active:opacity-80 py-2 px-1 outline-none focus-visible:ring-2 focus-visible:ring-accent rounded-sm">
                 Source <ArrowUpRight size={12} className="transition-transform duration-300 ease-out group-hover/btn:translate-x-[3px] group-hover/btn:-translate-y-[3px]" />
               </a>
             </div>

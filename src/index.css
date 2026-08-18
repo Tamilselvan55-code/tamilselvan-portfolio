@@ -198,7 +198,7 @@
 
   .text-tamil-name {
     font-family: 'Noto Sans Tamil', 'Noto Serif Tamil', 'Latha', 'Vijaya', sans-serif;
-    font-size: clamp(42px, 4vw, 48px);
+    font-size: clamp(32px, 8vw, 48px);
     font-weight: 500;
     line-height: 1.2;
     color: var(--ink-primary);
@@ -206,7 +206,7 @@
 
   .text-eng-name {
     font-family: 'Cormorant Garamond', Georgia, serif;
-    font-size: clamp(54px, 5vw, 64px);
+    font-size: clamp(40px, 10vw, 64px);
     font-weight: 600;
     line-height: 1.1;
     color: var(--ink-primary);

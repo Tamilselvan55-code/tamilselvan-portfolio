@@ -4,6 +4,9 @@ export default {
     "./index.html",
     "./src/**/*.{js,ts,jsx,tsx}",
   ],
+  future: {
+    hoverOnlyWhenSupported: true,
+  },
   theme: {
     extend: {
       colors: {
@@ -64,8 +67,8 @@ export default {
         serif:   ['"Cormorant Garamond"', 'serif'],
       },
       fontSize: {
-        'hero':    ['clamp(3.5rem,8vw,6rem)', { lineHeight: '1.0', letterSpacing: '-0.02em' }],
-        'display': ['clamp(2.5rem,5vw,4rem)',  { lineHeight: '1.1', letterSpacing: '-0.01em' }],
+        'hero':    ['clamp(2.5rem,8vw,6rem)', { lineHeight: '1.0', letterSpacing: '-0.02em' }],
+        'display': ['clamp(2rem,5vw,4rem)',  { lineHeight: '1.1', letterSpacing: '-0.01em' }],
         'section': ['clamp(2rem,3.5vw,3rem)',   { lineHeight: '1.15' }],
       },
       boxShadow: {
