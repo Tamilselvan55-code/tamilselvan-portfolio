@@ -1,12 +1,13 @@
 import express from 'express';
 import cors from 'cors';
-import nodemailer from 'nodemailer';
+import { Resend } from 'resend';
 import dotenv from 'dotenv';
 
 dotenv.config();
 
 const app = express();
 const PORT = process.env.PORT || 3001;
+const resend = new Resend(process.env.RESEND_API_KEY);
 
 // Middleware
 const allowedOrigins = [
@@ -63,11 +64,11 @@ app.post('/api/contact', async (req, res) => {
       });
     }
 
-    // Email options
-    const mailOptions = {
-      from: process.env.EMAIL_USER, // Sender must be the configured Gmail account
-      to: 'tamilselvane748@gmail.com', // Destination email
-      replyTo: email, // Visitor's email for easy reply
+    // Send the email using Resend
+    const { data, error } = await resend.emails.send({
+      from: 'onboarding@resend.dev', // Default testing sender if no domain is verified
+      to: process.env.CONTACT_TO_EMAIL,
+      replyTo: email,
       subject: `New Portfolio Contact — ${name}`,
       text: `New message received from your portfolio.
 
@@ -86,10 +87,15 @@ ${message}
 Date:
 ${new Date().toLocaleString()}
 `
-    };
+    });
 
-    // Send the email
-    await transporter.sendMail(mailOptions);
+    if (error) {
+      console.error("Resend API Error:", error);
+      return res.status(500).json({
+        success: false,
+        message: "Unable to send message"
+      });
+    }
 
     return res.status(200).json({
       success: true,
@@ -101,23 +107,6 @@ ${new Date().toLocaleString()}
       success: false,
       message: "Unable to send message"
     });
-  }
-});
-
-// Transporter setup
-const transporter = nodemailer.createTransport({
-  service: 'gmail',
-  auth: {
-    user: process.env.EMAIL_USER,
-    pass: process.env.EMAIL_PASS
-  }
-});
-
-transporter.verify((error, success) => {
-  if (error) {
-    console.error("SMTP verification failed. Check credentials.");
-  } else {
-    console.log("SMTP server is ready to take our messages");
   }
 });
 
