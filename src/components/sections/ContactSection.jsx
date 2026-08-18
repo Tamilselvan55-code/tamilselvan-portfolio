@@ -22,7 +22,8 @@ export function ContactSection() {
   const [formStatus, setFormStatus] = useState('idle');
   const [errors, setErrors] = useState({});
 
-  const SHOW_CONTACT_SECTION = false;
+  const SHOW_CONTACT_SECTION = true;
+  const SHOW_CONTACT_FORM = false;
 
   useEffect(() => {
     if (!SHOW_CONTACT_SECTION) return;
@@ -31,7 +32,7 @@ export function ContactSection() {
 
     if (reduced) {
       gsap.set(
-        [labelRef.current, titleRef.current, subtitleRef.current, bodyRef.current, listRef.current, formRef.current],
+        [labelRef.current, titleRef.current, subtitleRef.current, bodyRef.current, listRef.current, SHOW_CONTACT_FORM ? formRef.current : null].filter(Boolean),
         { opacity: 1, y: 0, x: 0, clipPath: 'none' }
       );
       return;
@@ -64,12 +65,15 @@ export function ContactSection() {
         { opacity: 0, y: 20 },
         { opacity: 1, y: 0, duration: 0.8, stagger: 0.12, ease: 'power3.out' },
         '-=0.4'
-      )
-      .fromTo(formRef.current,
-        { opacity: 0, x: 40 },
-        { opacity: 1, x: 0, duration: 1, ease: 'expo.out' },
-        '-=0.8'
       );
+
+      if (SHOW_CONTACT_FORM && formRef.current) {
+        tl.fromTo(formRef.current,
+          { opacity: 0, x: 40 },
+          { opacity: 1, x: 0, duration: 1, ease: 'expo.out' },
+          '-=0.8'
+        );
+      }
     }, sectionRef);
 
     return () => ctx.revert();
@@ -172,7 +176,7 @@ export function ContactSection() {
           </span>
         </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-20 lg:gap-20">
+        <div className={`grid grid-cols-1 ${SHOW_CONTACT_FORM ? 'lg:grid-cols-2' : 'max-w-4xl'} gap-20 lg:gap-20`}>
 
           {/* Left */}
           <div>
@@ -220,8 +224,9 @@ export function ContactSection() {
           </div>
 
           {/* Right — form */}
-          <div ref={formRef} className="relative" style={{ opacity: 0 }}>
-            {formStatus === 'success' && (
+          {SHOW_CONTACT_FORM && (
+            <div ref={formRef} className="relative" style={{ opacity: 0 }}>
+              {formStatus === 'success' && (
               <div className="absolute inset-0 flex flex-col items-center justify-center bg-canvas-base/95 z-20">
                 <CheckCircle2 className="w-12 h-12 text-accent mb-5" />
                 <h3 className="font-cinematic text-2xl text-ink-primary mb-2">Message Sent</h3>
@@ -317,6 +322,7 @@ export function ContactSection() {
               </div>
             </form>
           </div>
+          )}
 
         </div>
           </div>
