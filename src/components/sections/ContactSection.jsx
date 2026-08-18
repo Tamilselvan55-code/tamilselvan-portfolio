@@ -22,7 +22,11 @@ export function ContactSection() {
   const [formStatus, setFormStatus] = useState('idle');
   const [errors, setErrors] = useState({});
 
+  const SHOW_CONTACT_SECTION = false;
+
   useEffect(() => {
+    if (!SHOW_CONTACT_SECTION) return;
+
     const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
     if (reduced) {
@@ -151,13 +155,15 @@ export function ContactSection() {
     <section
       ref={sectionRef}
       id="contact"
-      className="relative section-py bg-canvas-base overflow-hidden"
-      aria-labelledby="contact-title"
+      className={`relative bg-canvas-base overflow-hidden ${SHOW_CONTACT_SECTION ? 'section-py' : 'py-12'}`}
+      aria-labelledby={SHOW_CONTACT_SECTION ? "contact-title" : undefined}
     >
-      {/* Top hairline */}
-      <div className="divider-luxury w-full mb-0" />
+      {SHOW_CONTACT_SECTION && (
+        <>
+          {/* Top hairline */}
+          <div className="divider-luxury w-full mb-0" />
 
-      <div className="w-full mx-auto section-padding max-w-[1500px]">
+          <div className="w-full mx-auto section-padding max-w-[1500px]">
 
         <div ref={labelRef} className="flex items-center gap-4 mb-6" style={{ opacity: 0 }}>
           <span className="h-px w-10 bg-accent/60" />
@@ -313,10 +319,12 @@ export function ContactSection() {
           </div>
 
         </div>
-      </div>
+          </div>
+        </>
+      )}
 
       {/* Footer */}
-      <div className="w-full mx-auto section-padding max-w-[1500px] mt-20 pt-8 border-t border-border/60 flex flex-col sm:flex-row items-center justify-between gap-4">
+      <div className={`w-full mx-auto section-padding max-w-[1500px] flex flex-col sm:flex-row items-center justify-between gap-4 ${SHOW_CONTACT_SECTION ? 'mt-20 pt-8 border-t border-border/60' : ''}`}>
         <span className="text-[0.6875rem] font-sans tracking-[0.2em] text-ink-muted/60 uppercase">
           © {new Date().getFullYear()} Tamil Selvan — All rights reserved
         </span>
