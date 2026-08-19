@@ -9,6 +9,7 @@ export const Button = forwardRef(({
   className,
   icon: Icon,
   onClick,
+  as: Component = 'button',
   ...props
 }, ref) => {
   const btnRef = useRef(null);
@@ -85,7 +86,7 @@ export const Button = forwardRef(({
   };
 
   return (
-    <button
+    <Component
       ref={resolvedRef}
       onClick={onClick}
       className={twMerge(clsx(baseStyles, variants[variant]), className)}
@@ -100,7 +101,7 @@ export const Button = forwardRef(({
         {Icon && <Icon size={16} />}
         {children}
       </span>
-    </button>
+    </Component>
   );
 });
 

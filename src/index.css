@@ -452,3 +452,13 @@ html.lenis, html.lenis body {
   justify-content: center;
   overflow: hidden;
 }
+
+/* ── Cinematic 3D Scaffolding (Desktop Only) ────────────── */
+@media (min-width: 768px) {
+  .cinematic-scene {
+    perspective: 1500px;
+  }
+  .cinematic-layer-global {
+    transform-style: preserve-3d;
+  }
+}

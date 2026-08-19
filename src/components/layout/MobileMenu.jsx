@@ -76,10 +76,7 @@ export function MobileMenu({ isOpen, onClose, links }) {
     if (href.startsWith('#') && location.pathname !== '/') {
       navigate('/' + href);
     } else {
-      // Defer one frame so the menu close animation begins before scrolling
-      requestAnimationFrame(() => {
-        document.querySelector(href)?.scrollIntoView({ behavior: 'smooth' });
-      });
+      document.querySelector(href)?.scrollIntoView({ behavior: 'smooth' });
     }
   };
 

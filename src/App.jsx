@@ -37,8 +37,8 @@ function App() {
         {/* <PortfolioGuide /> */}
 
         {/* FULL WEBSITE CINEMATIC 3D WRAPPER */}
-        <div className="cinematic-scene" style={{ perspective: '1500px', width: '100%', minHeight: '100svh' }}>
-          <div data-cinematic-layer="global" style={{ transformStyle: 'preserve-3d', width: '100%', minHeight: '100svh' }}>
+        <div className="cinematic-scene" style={{ width: '100%', minHeight: '100svh' }}>
+          <div className="cinematic-layer-global" data-cinematic-layer="global" style={{ width: '100%', minHeight: '100svh' }}>
             {/* Site chrome — appears after intro */}
             <Header introComplete={introComplete} />
 

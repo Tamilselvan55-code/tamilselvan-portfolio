@@ -163,6 +163,14 @@ export function HeroContent({ introComplete }) {
               <Button variant="ghost" onClick={() => window.open('https://www.linkedin.com/in/tamilselvan-e-69040b2a2/', '_blank', 'noopener,noreferrer')}>
                 Let&apos;s Connect
               </Button>
+              <Button
+                as="a"
+                variant="ghost"
+                href="/resume.pdf"
+                download="Tamilselvan_Resume.pdf"
+              >
+                Download Resume
+              </Button>
             </div>
           </div>
         </div>

@@ -10,9 +10,10 @@ export function Home({ introComplete }) {
 
   useEffect(() => {
     if (location.hash) {
-      setTimeout(() => {
+      // Use requestAnimationFrame once to ensure DOM is ready without an artificial 100ms delay
+      requestAnimationFrame(() => {
         document.querySelector(location.hash)?.scrollIntoView({ behavior: 'smooth' });
-      }, 100);
+      });
     }
   }, [location]);
 

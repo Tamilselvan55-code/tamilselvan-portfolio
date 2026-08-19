@@ -5,8 +5,11 @@ export function useCinematic3D(introComplete) {
   const isEnabled = useRef(false);
 
   useEffect(() => {
+    const isMobile = window.innerWidth < 768 || window.matchMedia('(hover: none) and (pointer: coarse)').matches;
     const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-    if (reduced || !introComplete) return;
+    
+    // Completely disable cinematic 3D engine on mobile to preserve native scroll performance
+    if (reduced || !introComplete || isMobile) return;
 
     isEnabled.current = true;
 
@@ -38,10 +41,6 @@ export function useCinematic3D(introComplete) {
 
     const update = (time) => {
       if (!isEnabled.current) return;
-
-      const isMobile = window.innerWidth < 768 || window.matchMedia('(hover: none) and (pointer: coarse)').matches;
-      // Disable expensive scroll-depth and continuous per-frame global transforms on mobile
-      if (isMobile) return;
 
       if (globalWrapper) {
         // Automatic Cinematic Floating (duration ~18-24s)
