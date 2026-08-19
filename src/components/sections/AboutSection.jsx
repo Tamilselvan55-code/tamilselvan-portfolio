@@ -142,22 +142,56 @@ export function AboutSection() {
               ))}
             </div>
 
-            {/* Education */}
+            {/* Education & Experience Container */}
             <div ref={statsRef} style={{ opacity: 0 }}>
-              <h3 className="text-[0.6875rem] font-sans font-medium tracking-[0.2em] uppercase text-ink-muted mb-5">
-                Education
-              </h3>
-              <div className="flex items-start gap-4">
-                <div className="w-px h-full min-h-[3rem] bg-accent/30 mt-1 shrink-0" />
-                <div>
-                  <div className="font-cinematic text-[1.5rem] leading-[1.2] text-ink-primary">
-                    B.Tech Information Technology
-                  </div>
-                  <div className="text-[0.875rem] font-sans font-light text-ink-secondary mt-2">
-                    Currently in Final Year
+              
+              {/* Education */}
+              <div className="mb-10">
+                <h3 className="text-[0.6875rem] font-sans font-medium tracking-[0.2em] uppercase text-ink-muted mb-5">
+                  Education
+                </h3>
+                <div className="flex items-start gap-4">
+                  <div className="w-px h-full min-h-[3rem] bg-accent/30 mt-1 shrink-0" />
+                  <div>
+                    <div className="font-cinematic text-[1.5rem] leading-[1.2] text-ink-primary">
+                      B.Tech Information Technology
+                    </div>
+                    <div className="text-[0.9375rem] font-sans text-ink-primary mt-2">
+                      Rajalakshmi Engineering College, Chennai
+                    </div>
+                    <div className="text-[0.875rem] font-sans font-light text-ink-secondary mt-1">
+                      2023 – 2027 &nbsp;&bull;&nbsp; Currently in Final Year
+                    </div>
                   </div>
                 </div>
               </div>
+
+              {/* Experience */}
+              <div>
+                <h3 className="text-[0.6875rem] font-sans font-medium tracking-[0.2em] uppercase text-ink-muted mb-5">
+                  Experience
+                </h3>
+                <div className="flex items-start gap-4">
+                  <div className="w-px h-full min-h-[3rem] bg-accent/30 mt-1 shrink-0" />
+                  <div>
+                    <div className="font-cinematic text-[1.5rem] leading-[1.2] text-ink-primary">
+                      Full Stack Development Intern
+                    </div>
+                    <div className="text-[0.9375rem] font-sans text-ink-primary mt-2">
+                      Innovaskill Technologies Private Limited, Chennai
+                    </div>
+                    <div className="text-[0.875rem] font-sans font-light text-accent mt-1 mb-4">
+                      June 2025
+                    </div>
+                    <ul className="text-[0.875rem] font-sans font-light text-ink-secondary list-disc list-outside ml-4 space-y-2 max-w-[34rem]">
+                      <li>Developed responsive web applications using HTML5, CSS3, JavaScript, Node.js, Express.js, and MongoDB.</li>
+                      <li>Worked on frontend and backend integration for full-stack web applications.</li>
+                      <li>Gained hands-on experience in the Software Development Life Cycle (SDLC), including development, testing, debugging, and deployment.</li>
+                    </ul>
+                  </div>
+                </div>
+              </div>
+
             </div>
           </div>
 
