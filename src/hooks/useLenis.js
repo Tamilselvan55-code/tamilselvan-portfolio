@@ -9,7 +9,12 @@ export function useLenis() {
   useEffect(() => {
     // Check for reduced motion preference
     const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-    if (prefersReducedMotion) return;
+    
+    // Robust mobile/touch detection
+    const isMobile = window.innerWidth < 768 || window.matchMedia('(hover: none) and (pointer: coarse)').matches;
+    
+    // Completely disable Lenis on mobile/touch to preserve native scrolling
+    if (prefersReducedMotion || isMobile) return;
 
     const lenis = new Lenis({
       duration: 1.4,

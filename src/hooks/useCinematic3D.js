@@ -39,14 +39,15 @@ export function useCinematic3D(introComplete) {
     const update = (time) => {
       if (!isEnabled.current) return;
 
-      const isMobile = window.innerWidth < 768;
+      const isMobile = window.innerWidth < 768 || window.matchMedia('(hover: none) and (pointer: coarse)').matches;
+      // Disable expensive scroll-depth and continuous per-frame global transforms on mobile
+      if (isMobile) return;
 
       if (globalWrapper) {
-        const mult = isMobile ? 0.2 : 1;
         // Automatic Cinematic Floating (duration ~18-24s)
-        const floatY = Math.sin(time * 0.3) * (1.5 * mult); // ±1.5px
-        const floatRx = Math.sin(time * 0.25) * (0.1 * mult); // ±0.1deg
-        const floatRy = Math.cos(time * 0.35) * (0.15 * mult); // ±0.15deg
+        const floatY = Math.sin(time * 0.3) * 1.5; // ±1.5px
+        const floatRx = Math.sin(time * 0.25) * 0.1; // ±0.1deg
+        const floatRy = Math.cos(time * 0.35) * 0.15; // ±0.15deg
 
         gsap.set(globalWrapper, {
           y: floatY,
@@ -55,9 +56,6 @@ export function useCinematic3D(introComplete) {
           force3D: true
         });
       }
-
-      // Disable expensive scroll-depth per-section on mobile
-      if (isMobile) return;
 
       // Section Scroll Cinematic Depth
       const centerY = window.innerHeight / 2;
