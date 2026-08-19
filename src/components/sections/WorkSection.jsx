@@ -8,9 +8,18 @@ import { ProjectIntroAnimation } from './ProjectIntroAnimation';
 
 function ProjectVisual({ project, index }) {
   const [currentIndex, setCurrentIndex] = useState(0);
-  const [dragStart, setDragStart] = useState(null);
-  const [dragOffset, setDragOffset] = useState(0);
-  const [isDragging, setIsDragging] = useState(false);
+
+  // ── All touch tracking in refs — zero React re-renders during drag ──
+  const startXRef         = useRef(null);
+  const startYRef         = useRef(null);
+  const dragOffsetRef     = useRef(0);
+  const isDraggingRef     = useRef(false);
+  // 'undecided' | 'horizontal' | 'vertical'
+  const gestureRef        = useRef('undecided');
+  // ref to the sliding track element for direct DOM style mutations
+  const trackRef          = useRef(null);
+
+  const DIRECTION_THRESHOLD = 8; // px before we lock gesture direction
 
   const isGrocery = project.id === '01' || (project.title && project.title.includes('Grocery'));
   const isHealthcare = project.id === '03' || (project.title && project.title.includes('Smart Healthcare Appointment'));
@@ -29,29 +38,114 @@ function ProjectVisual({ project, index }) {
     });
   }, [images]);
 
-  const handleDragStart = (e) => {
+  // ── Shared reset helper ──────────────────────────────────────
+  const resetGesture = () => {
+    isDraggingRef.current     = false;
+    dragOffsetRef.current     = 0;
+    gestureRef.current        = 'undecided';
+    startXRef.current         = null;
+    startYRef.current         = null;
+    // Restore smooth transition and snap back visually
+    if (trackRef.current) {
+      trackRef.current.style.transition = 'transform 450ms cubic-bezier(0.25, 1, 0.5, 1)';
+      trackRef.current.style.transform  = `translateX(-${currentIndex * 100}%)`;
+    }
+  };
+
+  // ── Mouse handlers (desktop unchanged) ──────────────────────
+  const handleMouseDown = (e) => {
     if (!isCarousel) return;
-    setDragStart(e.type.includes('mouse') ? e.pageX : e.touches[0].clientX);
-    setIsDragging(true);
+    isDraggingRef.current  = true;
+    gestureRef.current     = 'horizontal'; // mouse is always horizontal
+    startXRef.current      = e.pageX;
+    dragOffsetRef.current  = 0;
+    if (trackRef.current) trackRef.current.style.transition = 'none';
   };
 
-  const handleDragMove = (e) => {
-    if (!isDragging || dragStart === null || !isCarousel) return;
-    const currentX = e.type.includes('mouse') ? e.pageX : e.touches[0].clientX;
-    setDragOffset(currentX - dragStart);
+  const handleMouseMove = (e) => {
+    if (!isDraggingRef.current || !isCarousel) return;
+    const delta = e.pageX - startXRef.current;
+    dragOffsetRef.current = delta;
+    if (trackRef.current) {
+      trackRef.current.style.transform = `translateX(calc(-${currentIndex * 100}% + ${delta}px))`;
+    }
   };
 
-  const handleDragEnd = () => {
-    if (!isDragging || !isCarousel) return;
-    setIsDragging(false);
-    
-    if (dragOffset < -50 && currentIndex < images.length - 1) {
+  const handleMouseUp = () => {
+    if (!isDraggingRef.current || !isCarousel) return;
+    const offset = dragOffsetRef.current;
+    if (offset < -50 && currentIndex < images.length - 1) {
       setCurrentIndex(prev => prev + 1);
-    } else if (dragOffset > 50 && currentIndex > 0) {
+    } else if (offset > 50 && currentIndex > 0) {
       setCurrentIndex(prev => prev - 1);
     }
-    setDragOffset(0);
+    resetGesture();
   };
+
+  // ── Touch handlers (mobile — ref-only, direction-aware) ──────
+  const handleTouchStart = (e) => {
+    if (!isCarousel) return;
+    const touch = e.touches[0];
+    startXRef.current      = touch.clientX;
+    startYRef.current      = touch.clientY;
+    dragOffsetRef.current  = 0;
+    isDraggingRef.current  = true;
+    gestureRef.current     = 'undecided';
+  };
+
+  const handleTouchMove = (e) => {
+    if (!isDraggingRef.current || !isCarousel) return;
+    const touch  = e.touches[0];
+    const deltaX = touch.clientX - startXRef.current;
+    const deltaY = touch.clientY - startYRef.current;
+    const absX   = Math.abs(deltaX);
+    const absY   = Math.abs(deltaY);
+
+    // Lock gesture direction once movement exceeds threshold
+    if (gestureRef.current === 'undecided') {
+      if (absX < DIRECTION_THRESHOLD && absY < DIRECTION_THRESHOLD) return;
+      gestureRef.current = absY > absX ? 'vertical' : 'horizontal';
+    }
+
+    // Vertical → hand off to native scroll, abort carousel completely
+    if (gestureRef.current === 'vertical') {
+      isDraggingRef.current = false;
+      // Snap track back without animation so no visual artifact remains
+      if (trackRef.current) {
+        trackRef.current.style.transition = 'none';
+        trackRef.current.style.transform  = `translateX(-${currentIndex * 100}%)`;
+      }
+      return;
+    }
+
+    // Horizontal → drive carousel via direct DOM style, no setState
+    dragOffsetRef.current = deltaX;
+    if (trackRef.current) {
+      trackRef.current.style.transition = 'none';
+      trackRef.current.style.transform  = `translateX(calc(-${currentIndex * 100}% + ${deltaX}px))`;
+    }
+  };
+
+  const handleTouchEnd = () => {
+    if (!isCarousel) return;
+    if (isDraggingRef.current && gestureRef.current === 'horizontal') {
+      const offset = dragOffsetRef.current;
+      if (offset < -50 && currentIndex < images.length - 1) {
+        setCurrentIndex(prev => prev + 1);
+      } else if (offset > 50 && currentIndex > 0) {
+        setCurrentIndex(prev => prev - 1);
+      }
+    }
+    resetGesture();
+  };
+
+  // Sync track position whenever currentIndex changes (after setState)
+  useEffect(() => {
+    if (trackRef.current) {
+      trackRef.current.style.transition = 'transform 450ms cubic-bezier(0.25, 1, 0.5, 1)';
+      trackRef.current.style.transform  = `translateX(-${currentIndex * 100}%)`;
+    }
+  }, [currentIndex]);
 
   const preventDragHandler = (e) => e.preventDefault();
 
@@ -67,19 +161,22 @@ function ProjectVisual({ project, index }) {
     return (
       <div 
         className="w-full h-full relative overflow-hidden flex flex-col justify-center py-4 lg:py-0 cursor-grab active:cursor-grabbing group/carousel"
-        onMouseDown={handleDragStart}
-        onMouseMove={handleDragMove}
-        onMouseUp={handleDragEnd}
-        onMouseLeave={handleDragEnd}
-        onTouchStart={handleDragStart}
-        onTouchMove={handleDragMove}
-        onTouchEnd={handleDragEnd}
+        onMouseDown={handleMouseDown}
+        onMouseMove={handleMouseMove}
+        onMouseUp={handleMouseUp}
+        onMouseLeave={handleMouseUp}
+        onTouchStart={handleTouchStart}
+        onTouchMove={handleTouchMove}
+        onTouchEnd={handleTouchEnd}
+        onTouchCancel={handleTouchEnd}
       >
+        {/* Track — position driven directly via trackRef, not React state */}
         <div 
+          ref={trackRef}
           className="flex h-full w-full"
           style={{
-            transform: `translateX(calc(-${currentIndex * 100}% + ${dragOffset}px))`,
-            transition: isDragging ? 'none' : 'transform 450ms cubic-bezier(0.25, 1, 0.5, 1)'
+            transform: `translateX(-${currentIndex * 100}%)`,
+            transition: 'transform 450ms cubic-bezier(0.25, 1, 0.5, 1)'
           }}
         >
           {images.map((img, i) => (
@@ -145,22 +242,24 @@ function ProjectVisual({ project, index }) {
       className={`project-visual w-full h-full overflow-hidden relative group/visual group/carousel ${
         useStandardCarousel ? 'cursor-grab active:cursor-grabbing' : ''
       }`}
-      onMouseDown={useStandardCarousel ? handleDragStart : undefined}
-      onMouseMove={useStandardCarousel ? handleDragMove : undefined}
-      onMouseUp={useStandardCarousel ? handleDragEnd : undefined}
-      onMouseLeave={useStandardCarousel ? handleDragEnd : undefined}
-      onTouchStart={useStandardCarousel ? handleDragStart : undefined}
-      onTouchMove={useStandardCarousel ? handleDragMove : undefined}
-      onTouchEnd={useStandardCarousel ? handleDragEnd : undefined}
+      onMouseDown={useStandardCarousel ? handleMouseDown : undefined}
+      onMouseMove={useStandardCarousel ? handleMouseMove : undefined}
+      onMouseUp={useStandardCarousel ? handleMouseUp : undefined}
+      onMouseLeave={useStandardCarousel ? handleMouseUp : undefined}
+      onTouchStart={useStandardCarousel ? handleTouchStart : undefined}
+      onTouchMove={useStandardCarousel ? handleTouchMove : undefined}
+      onTouchEnd={useStandardCarousel ? handleTouchEnd : undefined}
+      onTouchCancel={useStandardCarousel ? handleTouchEnd : undefined}
     >
       {/* Project Image */}
       {useStandardCarousel ? (
         <>
           <div 
+            ref={trackRef}
             className="flex h-full w-full absolute inset-0 z-0"
             style={{
-              transform: `translateX(calc(-${currentIndex * 100}% + ${dragOffset}px))`,
-              transition: isDragging ? 'none' : 'transform 450ms cubic-bezier(0.25, 1, 0.5, 1)'
+              transform: `translateX(-${currentIndex * 100}%)`,
+              transition: 'transform 450ms cubic-bezier(0.25, 1, 0.5, 1)'
             }}
           >
             {images.map((img, i) => (
