@@ -12,7 +12,7 @@ const SKILLS = [
 
 const QUALITIES = [
   { num: '4+',  label: 'Projects Built' },
-  { num: '5', label: 'Core Skills'    },
+  { num: '5+', label: 'Core Skills'    },
   { num: 'Final', label: 'Year B.Tech'    },
 ];
 

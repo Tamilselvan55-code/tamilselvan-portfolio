@@ -478,8 +478,9 @@ export function WorkSection() {
         }
       );
 
+      const isMobile = window.innerWidth < 768 || window.matchMedia('(hover: none)').matches || window.matchMedia('(pointer: coarse)').matches || ('ontouchstart' in window) || navigator.maxTouchPoints > 0;
       // Icon Travel Logic
-      if (!reduced) {
+      if (!reduced && !isMobile) {
         PROJECTS.forEach(project => {
           const iconEl = document.getElementById(`project-icon-${project.id}`);
           const wrapperEl = document.getElementById(`project-icon-wrapper-${project.id}`);

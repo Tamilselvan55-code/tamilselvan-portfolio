@@ -11,7 +11,7 @@ export function useLenis() {
     const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
     
     // Robust mobile/touch detection
-    const isMobile = window.innerWidth < 768 || window.matchMedia('(hover: none) and (pointer: coarse)').matches;
+    const isMobile = window.innerWidth < 768 || window.matchMedia('(hover: none)').matches || window.matchMedia('(pointer: coarse)').matches || ('ontouchstart' in window) || navigator.maxTouchPoints > 0;
     
     // Completely disable Lenis on mobile/touch to preserve native scrolling
     if (prefersReducedMotion || isMobile) return;

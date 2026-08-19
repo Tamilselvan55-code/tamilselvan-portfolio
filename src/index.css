@@ -47,8 +47,8 @@
     background-color: var(--canvas-base);
     color: var(--ink-primary);
     font-family: 'Inter', 'General Sans', system-ui, sans-serif;
-    overflow-x: hidden;
-    user-select: none;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
   }
 
   ::selection {

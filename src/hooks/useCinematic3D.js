@@ -5,7 +5,7 @@ export function useCinematic3D(introComplete) {
   const isEnabled = useRef(false);
 
   useEffect(() => {
-    const isMobile = window.innerWidth < 768 || window.matchMedia('(hover: none) and (pointer: coarse)').matches;
+    const isMobile = window.innerWidth < 768 || window.matchMedia('(hover: none)').matches || window.matchMedia('(pointer: coarse)').matches || ('ontouchstart' in window) || navigator.maxTouchPoints > 0;
     const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
     
     // Completely disable cinematic 3D engine on mobile to preserve native scroll performance

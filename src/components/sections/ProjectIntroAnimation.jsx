@@ -142,7 +142,7 @@ export function ProjectIntroAnimation({ projects }) {
         }
       });
 
-      const isMobile = window.innerWidth < 768;
+      const isMobile = window.innerWidth < 768 || window.matchMedia('(hover: none)').matches || window.matchMedia('(pointer: coarse)').matches || ('ontouchstart' in window) || navigator.maxTouchPoints > 0;
       
       // Reset active line to 0
       gsap.set(activeLineRef.current, { 
@@ -168,63 +168,81 @@ export function ProjectIntroAnimation({ projects }) {
       );
 
       // 2. Continuous Scroll-Based Progression
-      ScrollTrigger.create({
-        trigger: '#work',
-        start: 'top bottom',
-        end: 'bottom top',
-        onUpdate: (self) => {
-          // Progress line continuously scrubs with scroll
-          gsap.set(activeLineRef.current, {
-            [isMobile ? 'height' : 'width']: `${self.progress * 100}%`
-          });
+      if (!isMobile) {
+        ScrollTrigger.create({
+          trigger: '#work',
+          start: 'top bottom',
+          end: 'bottom top',
+          onUpdate: (self) => {
+            // Progress line continuously scrubs with scroll
+            gsap.set(activeLineRef.current, {
+              [isMobile ? 'height' : 'width']: `${self.progress * 100}%`
+            });
 
-          // Check if progress line physically reached icons
-          for (let idx = 0; idx < iconCirclesRef.current.length; idx++) {
-            const iconEl = iconCirclesRef.current[idx];
-            if (!iconEl) continue;
-            
-            // Calculate physical position percentage of the icon along the line
-            // Buffer of 0.05 to trigger slightly before/as the line touches it
-            const threshold = idx === 0 ? 0 : (idx / (projects.length - 1)) - 0.05;
-            const isColored = self.progress >= threshold;
-            
-            if (isColored) {
-              // Once activated, never return to grey
-              if (iconEl.dataset.colored !== 'true') {
-                iconEl.dataset.colored = 'true';
-                
-                const projColors = PROJECT_THEMES[projects[idx].id];
-                const svgEl = svgsRef.current[idx];
+            // Check if progress line physically reached icons
+            for (let idx = 0; idx < iconCirclesRef.current.length; idx++) {
+              const iconEl = iconCirclesRef.current[idx];
+              if (!iconEl) continue;
+              
+              // Calculate physical position percentage of the icon along the line
+              // Buffer of 0.05 to trigger slightly before/as the line touches it
+              const threshold = idx === 0 ? 0 : (idx / (projects.length - 1)) - 0.05;
+              const isColored = self.progress >= threshold;
+              
+              if (isColored) {
+                // Once activated, never return to grey
+                if (iconEl.dataset.colored !== 'true') {
+                  iconEl.dataset.colored = 'true';
+                  
+                  const projColors = PROJECT_THEMES[projects[idx].id];
+                  const svgEl = svgsRef.current[idx];
 
-                // Dynamically color the active line itself as it progresses
-                gsap.to(activeLineRef.current, {
-                  backgroundColor: projColors.lineColor,
-                  duration: 0.5,
-                  ease: 'power2.out'
-                });
-
-                // Use GSAP for smooth interpolation of colors and glow
-                gsap.to(iconEl, {
-                  backgroundColor: projColors.activeBg,
-                  borderColor: projColors.activeBorder,
-                  boxShadow: projColors.activeShadow,
-                  scale: 1,
-                  duration: 0.5,
-                  ease: 'power2.out'
-                });
-                
-                if (svgEl) {
-                  gsap.to(svgEl, {
-                    filter: 'brightness(1.15)',
+                  // Dynamically color the active line itself as it progresses
+                  gsap.to(activeLineRef.current, {
+                    backgroundColor: projColors.lineColor,
                     duration: 0.5,
                     ease: 'power2.out'
                   });
+
+                  // Use GSAP for smooth interpolation of colors and glow
+                  gsap.to(iconEl, {
+                    backgroundColor: projColors.activeBg,
+                    borderColor: projColors.activeBorder,
+                    boxShadow: projColors.activeShadow,
+                    scale: 1,
+                    duration: 0.5,
+                    ease: 'power2.out'
+                  });
+                  
+                  if (svgEl) {
+                    gsap.to(svgEl, {
+                      filter: 'brightness(1.15)',
+                      duration: 0.5,
+                      ease: 'power2.out'
+                    });
+                  }
                 }
               }
             }
           }
-        }
-      });
+        });
+      } else {
+        // Fallback for mobile: automatically activate icons immediately for performance
+        gsap.set(activeLineRef.current, { height: '100%' });
+        iconCirclesRef.current.forEach((iconEl, idx) => {
+           if (iconEl) {
+             const projColors = PROJECT_THEMES[projects[idx].id];
+             const svgEl = svgsRef.current[idx];
+             gsap.set(iconEl, {
+                backgroundColor: projColors.activeBg,
+                borderColor: projColors.activeBorder,
+                boxShadow: projColors.activeShadow,
+                scale: 1
+             });
+             if (svgEl) gsap.set(svgEl, { filter: 'brightness(1.15)' });
+           }
+        });
+      }
 
     }, containerRef);
 
